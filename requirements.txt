@@ -1,0 +1,7 @@
+opencv-python~=4.4
+# face detection options
+# note we use opencv for the default viola-jones (Haar) implementation
+face_recognition # HOG-based, using dlib
+fdet # deep learning approach (MTCNN, RetinaFace)
+mtcnn # tf implementation of MTCNN
+matplotlib
