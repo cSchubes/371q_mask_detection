@@ -1,7 +1,19 @@
-opencv-python~=4.4
-# face detection options
-# note we use opencv for the default viola-jones (Haar) implementation
-face_recognition # HOG-based, using dlib
-fdet # deep learning approach (MTCNN, RetinaFace)
-mtcnn # tf implementation of MTCNN
 matplotlib
+numpy
+# note we use opencv for the default viola-jones (Haar) implementation
+# as well as image loading and such
+opencv-python~=4.4.0
+
+# TF stuff
+# NOTE: the mtcnn package requires TF 2.2 because it uses Keras
+# the retinaface package requires TF 2.1 because the dev pinned it
+# so we must use both interchangably during testing
+# tensorflow==2.1.0
+tensorflow~=2.2.0
+
+# face detection ML libraries
+fdet # deep learning approach (MTCNN, RetinaFace)
+mtcnn # tf implementation of MTCNN, requires TF 2.2
+retinaface # from: https://github.com/heewinkim/retinaface, requires TF 2.1
+# commented out bc it installs under the same namespace as "retinaface" package, and we are not using it
+# retinaface_pytorch # from: https://github.com/ternaus/retinaface
