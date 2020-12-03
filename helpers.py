@@ -72,11 +72,37 @@ def convert_kaggle_863_for_metrics(imgs_with_labels):
         'raw_data': imgs_with_labels,
         'bboxes': bboxes
     }
+
+def convert_kaggle_863_for_metrics_class_labels(imgs_with_labels):
+    from od_metrics.BoundingBox import BoundingBox
+    from od_metrics.BoundingBoxes import BoundingBoxes
+    from od_metrics.utils import BBFormat, BBType
+    
+    bboxes = BoundingBoxes()
+    for img_name, img_data in imgs_with_labels.items():
+        boxes, labels = parse_voc_bndboxes(img_data['raw_annotation'])
+        # for (xmin, ymin, xmax, ymax) in boxes:
+        for i in range(len(boxes)):
+            (xmin, ymin, xmax, ymax) = boxes[i]
+            bbox = BoundingBox(
+                imageName=img_name,
+                classId=labels[i],
+                x = xmin,
+                y = ymin,
+                w = xmax,
+                h = ymax,
+                bbType=BBType.GroundTruth,
+                format=BBFormat.XYX2Y2,
+            )
+            bboxes.addBoundingBox(bbox)
+            
+    return {
+        'raw_data': imgs_with_labels,
+        'bboxes': bboxes
+    }
     
 # parse the boudning boxes from the given XML tree root
 def parse_voc_bndboxes(xml_root):
-    # list_with_all_boxes = []
-    # boxes_matrix = np.ndarray((0, 4), dtype=np.float32)
     all_boxes = []
     all_labels = []
     
@@ -91,12 +117,13 @@ def parse_voc_bndboxes(xml_root):
 
         # coco detection tools want boxes in this format
         list_with_single_boxes = [xmin, ymin, xmax, ymax]
-        # list_with_all_boxes.append(list_with_single_boxes)
-        # boxes_matrix = np.vstack((boxes_matrix, list_with_single_boxes)).astype(np.float32)
+        
         all_boxes.append(list_with_single_boxes)
-        all_labels.append(boxes.find("name").text)
+        if boxes.find("name").text == 'mask_weared_incorrect':
+            all_labels.append('without_mask')
+        else:
+            all_labels.append(boxes.find("name").text)
 
-    # return boxes_matrix
     return all_boxes, all_labels
 
 
